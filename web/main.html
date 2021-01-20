@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style type="text/css">
+        #container {
+            width: 700px;
+            height: 950px;
+            margin: auto;
+        }
+
+        #t_top {
+            border: solid 1px;
+            width: 100%;
+            height: 10%;
+            border-bottom: none;
+        }
+
+        #t_center {
+            width: 100%;
+            height: 80%;
+        }
+
+        #center_left {
+            border: solid 1px;
+            width: 19.7%;
+            height: 100%;
+            float: left;
+        }
+
+        #center_right {
+            border: solid 1px;
+            border-left: none;
+            width: 79.7%;
+            height: 100%;
+            float: right;
+        }
+
+        #t_bottom {
+            border: solid 1px;
+            border-top: none;
+            width: 100%;
+            height: 10%;
+        }
+    </style>
+
+    <script type="text/javascript" src="js/jquery-3.5.1.min.js">
+    </script>
+    <script type="text/javascript">
+        console.log(222);
+        $(function () {
+            $.ajax({
+                type: "post",
+                url: "welCome",
+                success: function (result) {
+                    if (result) {
+                        $("#t_top_msg").text("welcome:" + result.uname)
+                    } else {
+                        $("#btn").text("error");
+                    }
+                },
+                error: function (result) {
+                    alert("error");
+                }
+            })
+
+            $.get("menuInfo", {pid: 0}, function (data) {
+
+                var menuTree = $("#menuTree");
+                for (let i = 0; i < data.length; i++) {
+                    console.log(data[i].mname);
+                    menuTree.append("<li><a id='"+data[i].mid+"' href='javascript:void(0)'>" + data[i].mname + "</a></li>");
+                }
+                $("#menuTree a").click(function (){
+                    var  afirst = $(this);
+                    var ul = afirst.next();
+                    if (ul.length > 0){
+                        ul.remove();
+                    }else{
+                        $.get("menuInfo",{pid:$(this).attr("id")},function (data){
+                            afirst.after("<ul></ul>");
+                            var ul = afirst.next();
+
+                            for (let i = 0; i < data.length; i++) {
+                                ul.append("<li><a id='"+data[i].mid+"' href='javascript:void(0)'>" + data[i].mname + "</a></li>");
+                            }
+                        })
+                    }
+                })
+            })
+
+
+        })
+    </script>
+</head>
+<body>
+<div id="container">
+    <div id="t_top">
+        <span id="t_top_msg"></span>
+    </div>
+
+    <div id="t_center">
+        <div id="center_left">
+            <ul id="menuTree"></ul>
+        </div>
+        <div id="center_right"></div>
+    </div>
+
+    <div id="t_bottom">
+
+    </div>
+</div>
+</body>
+</html>
